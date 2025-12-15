@@ -408,3 +408,16 @@ curl http://localhost:3000
   <title>phpMyAdmin</title>
   ...
 ```
+
+### Mettre en place des données persistentes pour la db
+
+Bien présent dans le compose via:
+
+```yml
+...
+volumes:
+      - db_data:/var/lib/mysql
+      ...
+volumes:
+  db_data:
+```
