@@ -135,3 +135,35 @@ PS C:\Users\garto\docker> curl http://localhost:8080
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="same-origin">
 ```
+
+## 4. Donnée persistantes
+
+### Ajouter la gestion d'un volume à votre compose.yml
+
+```yml
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      - MYSQL_ROOT_PASSWORD=07Momo05
+    volumes:
+      - db_data:/var/lib/mysql
+
+
+  pma:
+    image: phpmyadmin
+    ports:
+      - "8080:80"
+
+volumes:
+  db_data:
+```
+
+### Prouver que le volume est bien utilisé
+
+```bash
+PS C:\Users\garto\docker> docker volume ls
+DRIVER    VOLUME NAME
+local     docker_db_data
+```
+
