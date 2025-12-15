@@ -167,3 +167,34 @@ DRIVER    VOLUME NAME
 local     docker_db_data
 ```
 
+## 5. Changing database easily
+
+### Proposer un nouveau compose.yml
+
+```yml
+services:
+  db:
+    image: "postgres:16"
+    environment:
+      - POSTGRES_PASSWORD=07Momo05
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
+
+
+volumes:
+  db_data:
+```
+
+###  Prouver que ça run !
+
+```bash
+PS C:\Users\garto\docker> docker ps
+CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+2538e42bb9b9   adminer       "entrypoint.sh docke…"   3 minutes ago   Up 3 minutes   0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp   docker-adminer-1
+fe769c008ebc   postgres:16   "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes   5432/tcp                                      docker-db-1
+```
