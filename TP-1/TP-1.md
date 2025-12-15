@@ -214,3 +214,197 @@ PS C:\Users\garto\OneDrive\Dokumenter\Documents\TP-Docker\TP-1\part2\1> docker b
  ...                         
  ```
 
+### Lancer l'application avec une commande docker run, cette commande :
+
+```bash
+PS C:\Users\garto\OneDrive\Dokumenter\Documents\TP-Docker\TP-1\part2\1> docker run -p 3000:3000 -d shitty_app:1.0
+20da6e1cac4035a9c801dd4eacebebc99c2345b3fff761c50f9cd72c9fe9cf79
+```
+
+
+```bash
+PS C:\Users\garto\OneDrive\Dokumenter\Documents\TP-Docker\TP-1\part2\1> docker ps
+CONTAINER ID   IMAGE            COMMAND                  CREATED              STATUS              PORTS                                         NAMES
+20da6e1cac40   shitty_app:1.0   "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp   elastic_bardeen
+PS C:\Users\garto\OneDrive\Dokumenter\Documents\TP-Docker\TP-1\part2\1> docker logs elastic_bardeen -f
+
+> Shitty webapp for B3 Dev TP1@1.0.0 dev
+> nodemon -L src/app.js
+
+[nodemon] 3.1.11
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node src/app.js`
+Server running at http://localhost:3000
+```
+
+curl: 
+
+```html
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>HTTP Cat</title>
+        <style>
+          body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+          }
+          img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+          }
+        </style>
+      </head>
+      <body>
+        <img src="https://http.cat/images/200.jpg" alt="HTTP Cat 200 - OK">
+      </body>
+    </html>
+```
+
+
+## 3. Hot reload pleaaaase
+
+### Lancer un nouveau conteneur à partir de l'image shitty_app
+
+```bash
+PS C:\Users\garto\OneDrive\Dokumenter\Documents\TP-Docker\TP-1\part2\1> docker run -p 3000:3000 -d -v "src:/app/src" shitty_app:1.0
+```
+
+### Vérifier que ça fonctionne
+
+```bash
+PS C:\Users\garto\OneDrive\Dokumenter\Documents\TP-Docker\TP-1\part2\1> docker logs -f pensive_wilson
+
+> Shitty webapp for B3 Dev TP1@1.0.0 dev
+> nodemon -L src/app.js
+
+[nodemon] 3.1.11
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node src/app.js`
+Server running at http://localhost:3000
+```
+
+## 4. Compose please
+
+###  Transformer ce docker run en compose.yml
+
+```yml
+services:
+  app:
+    image: shitty_app:1.0
+    ports:
+      - 3000:3000
+    volumes:
+      - "./src:/app/src"
+```
+
+## 5. DB please
+
+### Créer un compose.yml
+
+```yml
+services:
+  db:
+    image: "mysql:8.4"
+    environment:
+      - MYSQL_ROOT_PASSWORD=07Momo05
+    volumes:
+      - db_data:/var/lib/mysql
+  pma:
+    image: phpmyadmin
+    ports:
+      - "8080:80"
+  app:
+    image: shitty_app_with_db:1.0
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./src:/app/src"
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=07Momo05
+      - DB_NAME=db
+      - DB_PORT=3306
+      - PORT=3000
+volumes:
+  db_data:
+```
+
+### Allumer la stack et prouver que ça fonctionne
+
+```bash
+PS C:\Users\garto\OneDrive\Dokumenter\Documents\TP-Docker\TP-1\part2\5> docker ps
+CONTAINER ID   IMAGE                    COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+8b4d33ef8ef3   shitty_app_with_db:1.0   "docker-entrypoint.s…"   4 seconds ago   Up 3 seconds   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp   5-app-1
+6cf44a1d547f   phpmyadmin               "/docker-entrypoint.…"   2 minutes ago   Up 2 minutes   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp       5-pma-1
+e4eaf4a3546f   mysql:8.4                "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes   3306/tcp, 33060/tcp                           5-db-1
+PS C:\Users\garto\OneDrive\Dokumenter\Documents\TP-Docker\TP-1\part2\5> docker compose logs app -f
+pma-1  | [Mon Dec 15 14:47:48.023619 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.65 (Debian) PHP/8.3.28 configured -- resuming normal operations
+db-1   | 2025-12-15T14:47:48.519125Z 0 [System] [MY-015015] [Server] MySQL Server - start.
+app-1  | [nodemon] 3.1.11
+app-1  | [nodemon] to restart at any time, enter `rs`
+app-1  | [nodemon] watching path(s): *.*
+app-1  | [nodemon] watching extensions: js,mjs,cjs,json
+app-1  | [nodemon] starting `node src/app.js`
+app-1  | Database ready
+```
+
+#### Curl App 
+
+```html
+curl http://localhost:3000
+
+    <h1>Simple DB App</h1>
+      <img src="https://http.cat/images/200.jpg" alt="HTTP Cat 200 - OK">
+    <h2>Add User</h2>
+    <form method="POST" action="/add">
+      <input type="text" name="pseudo" placeholder="Enter pseudo" required>
+      <button>Add</button>
+    </form>
+
+    <h2>Users (0)</h2>
+    <ul><p>No users yet</p></ul>
+
+    <style>
+      body { font-family: Arial; padding: 20px; }
+      input { padding: 8px; margin-right: 10px; }
+      button { padding: 8px 15px; }
+      ul { list-style: none; padding: 0; }
+      li { padding: 5px; background: #f0f0f0; margin: 5px 0; }
+    </style>
+```
+
+#### Curl PMA
+
+```html
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="same-origin">
+  <meta name="robots" content="noindex,nofollow,notranslate">
+  <meta name="google" content="notranslate">
+  <style id="cfs-style">html{display: none;}</style>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="./themes/pmahomme/jquery/jquery-ui.css">
+  <link rel="stylesheet" type="text/css" href="js/vendor/codemirror/lib/codemirror.css?v=5.2.3">
+  <link rel="stylesheet" type="text/css" href="js/vendor/codemirror/addon/hint/show-hint.css?v=5.2.3">
+  <link rel="stylesheet" type="text/css" href="js/vendor/codemirror/addon/lint/lint.css?v=5.2.3">
+  <link rel="stylesheet" type="text/css" href="./themes/pmahomme/css/theme.css?v=5.2.3">
+  <title>phpMyAdmin</title>
+  ...
+```
