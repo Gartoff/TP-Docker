@@ -8,7 +8,8 @@
 
 ### Vérifier que le conteneur est actif
 
-```PS C:\Users\garto> docker ps -a
+```
+PS C:\Users\garto> docker ps -a
 CONTAINER ID   IMAGE       COMMAND                  CREATED         STATUS                   PORTS             NAMES
 bbd3b52a366f   mysql:8.4   "docker-entrypoint.s…"   2 minutes ago   Exited (1) 2 minutes ago                   mysql
 ```
@@ -16,7 +17,8 @@ bbd3b52a366f   mysql:8.4   "docker-entrypoint.s…"   2 minutes ago   Exited (1)
 ### Consulter les logs du conteneur
 
 
-```PS C:\Users\garto> docker logs mysql -f
+```
+PS C:\Users\garto> docker logs mysql -f
 2025-12-15 10:25:57+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.4.7-1.el9 started.
 2025-12-15 10:25:57+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
 2025-12-15 10:25:57+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.4.7-1.el9 started.
