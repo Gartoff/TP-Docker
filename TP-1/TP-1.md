@@ -8,4 +8,6 @@
 
 ### Vérifier que le conteneur est actif
 
- 
+```PS C:\Users\garto> docker ps -a
+CONTAINER ID   IMAGE       COMMAND                  CREATED         STATUS                   PORTS             NAMES
+bbd3b52a366f   mysql:8.4   "docker-entrypoint.s…"   2 minutes ago   Exited (1) 2 minutes ago                   mysql```
