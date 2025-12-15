@@ -1,4 +1,4 @@
-# TP1 : Devs like Docker
+# TP1 Part 1: Devs like Docker
 
 ## 1. Une ptite db MySQL
 
@@ -198,3 +198,19 @@ CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS    
 2538e42bb9b9   adminer       "entrypoint.sh docke…"   3 minutes ago   Up 3 minutes   0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp   docker-adminer-1
 fe769c008ebc   postgres:16   "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes   5432/tcp                                      docker-db-1
 ```
+
+
+# TP1 Part 2 : Dev environment
+
+## 2. Dockerfile
+
+### Construire l'image shitty_app à partir de ce Dockerfile :
+
+```bash
+PS C:\Users\garto\OneDrive\Dokumenter\Documents\TP-Docker\TP-1\part2\1> docker build -t shitty_app:1.0 .
+[+] Building 56.8s (12/12) FINISHED                                                                                                        docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                                                                       0.1s
+ => => transferring dockerfile: 918B     
+ ...                         
+ ```
+
